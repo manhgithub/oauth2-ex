@@ -23,10 +23,8 @@ router.get('/logout', function(req, res, next) {
 
 // FACEBOOK ROUTES =====================
 // =====================================
-// yêu cầu xác thực bằng facebook
 router.get('/facebook/auth', passport.authenticate('facebook', { scope: ['email'] }));
 
-// xử lý sau khi user cho phép xác thực với facebook
 router.get('/facebook/auth/redirect',
   passport.authenticate('facebook', {
     successRedirect: '/profile',

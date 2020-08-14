@@ -12,8 +12,6 @@ const google_options = {
 };
 
 const facebook_options = {
-    // điền thông tin để xác thực với Facebook.
-    // những thông tin này đã được điền ở file auth.js
     clientID: authConfig.facebookAuth.clientId,
     clientSecret: authConfig.facebookAuth.clientSecret,
     callbackURL: authConfig.facebookAuth.callBackUrl,
@@ -22,7 +20,7 @@ const facebook_options = {
 
 function google_callback(token, refreshToken, profile, done) {
     process.nextTick( ()=> {
-        // // tìm trong db xem có user nào đã sử dụng google id này chưa
+        // // Find in DB if have this id
         User.findOne({'google.id': profile.id}, (err,user)=> {
             if(err) {
                 return done(err,false);
@@ -51,10 +49,7 @@ function google_callback(token, refreshToken, profile, done) {
 }
 
 function facebook_callback(token, refreshToken, profile, done) {
-    console.log("FB profile", profile);
-    console.log("FB token", token);
     process.nextTick(function () {
-        // tìm trong db xem có user nào đã sử dụng facebook id này chưa
         User.findOne({ 'google.id': profile.id }, function (err, user) {
             if (err)
                 return done(err);
@@ -65,9 +60,7 @@ function facebook_callback(token, refreshToken, profile, done) {
                 newUser.google.id = profile.id;
                 newUser.google.token = token;
                 newUser.google.name = profile.name.givenName + ' ' + profile.name.familyName;
-                // fb có thể trả lại nhiều email, chúng ta lấy cái đầu tien
                 newUser.google.email = "No email" ;
-                // lưu vào db
                 newUser.save(function (err) {
                     if (err)
                         throw err;
