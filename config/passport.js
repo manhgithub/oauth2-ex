@@ -11,15 +11,12 @@ const options = {
 };
 
 function callback(token, refreshToken, profile, done) {
-    console.log(token);
-    console.log(refreshToken);
-    console.log(profile);
     process.nextTick( ()=> {
         // // tìm trong db xem có user nào đã sử dụng google id này chưa
-        console.log("In process");
         User.findOne({'google.id': profile.id}, (err,user)=> {
-            if(err)
+            if(err) {
                 return done(err,false);
+            }
             if(user){
                 // if a user is found, log them in
                 return done(null, user);
@@ -56,7 +53,5 @@ module.exports = function(passport){
             done(err, user);
         });
     });
-
     passport.use(new GoogleStrategy(options, callback));
-
 };
