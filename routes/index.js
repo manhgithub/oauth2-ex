@@ -5,7 +5,11 @@ const passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  if (req.isAuthenticated()) {
+    res.render('profile');
+  } else {
+    res.render('index');
+  }
 });
 
 router.get('/profile',isLoggedIn, function(req, res, next) {
@@ -16,6 +20,19 @@ router.get('/logout', function(req, res, next) {
   req.logout();
   res.redirect('/');
 });
+
+// FACEBOOK ROUTES =====================
+// =====================================
+// yêu cầu xác thực bằng facebook
+router.get('/facebook/auth', passport.authenticate('facebook', { scope: ['email'] }));
+
+// xử lý sau khi user cho phép xác thực với facebook
+router.get('/facebook/auth/redirect',
+  passport.authenticate('facebook', {
+    successRedirect: '/profile',
+    failureRedirect: '/'
+  })
+);
 
 router.get('/google/auth', passport.authenticate('google', { scope: 
   'https://www.googleapis.com/auth/plus.me https://www.google.com/m8/feeds https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile' 
